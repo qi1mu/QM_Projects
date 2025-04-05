@@ -42,6 +42,26 @@ def get_month():
             print("Invalid input. Please enter a valid number.")
 
 
+def get_first_day_of_week():
+    """
+    Prompt for and validate the first day of week preference.
+    
+    Note: This function is kept for reference but is no longer used.
+    First day of week is now configured via command-line arguments.
+    
+    Returns:
+        int: 0 for Monday, 6 for Sunday (following calendar module convention)
+    """
+    while True:
+        choice = input("Start week with (M)onday or (S)unday? [M/S]: ").strip().lower()
+        if choice == 'm' or choice == 'monday':
+            return 0  # Monday (calendar module uses 0 for Monday)
+        elif choice == 's' or choice == 'sunday':
+            return 6  # Sunday (calendar module uses 6 for Sunday)
+        else:
+            print("Please enter 'M' for Monday or 'S' for Sunday.")
+
+
 def validate_input(year, month):
     """
     Validate if the year and month are within acceptable ranges.

@@ -40,33 +40,47 @@ def format_header(month_name, year):
     return title.center(28)
 
 
-def format_weekdays():
+def format_weekdays(first_day_of_week=0):
     """
     Create a row of weekday abbreviations.
     
+    Args:
+        first_day_of_week (int): First day of week (0=Monday, 6=Sunday)
+        
     Returns:
         str: Formatted weekday header
     """
-    return "Mo Tu We Th Fr Sa Su"
+    # Define all weekday abbreviations
+    weekdays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
+    
+    # Reorder based on first day of week
+    if first_day_of_week == 6:  # Sunday
+        weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+    
+    return " ".join(weekdays)
 
 
-def format_days(year, month):
+def format_days(year, month, first_day_of_week=0):
     """
     Calculate and format the days in the given month/year.
     
     Args:
         year (int): The year
         month (int): The month (1-12)
+        first_day_of_week (int): First day of week (0=Monday, 6=Sunday)
         
     Returns:
         list: List of strings representing weeks in the month
     """
-    # Create a calendar with Monday as the first day of the week
-    cal = calendar.monthcalendar(year, month)
+    # Set up the calendar with the appropriate first day of week
+    cal = calendar.Calendar(first_day_of_week)
+    
+    # Get the month calendar
+    month_calendar = cal.monthdayscalendar(year, month)
     
     # Format each week
     formatted_weeks = []
-    for week in cal:
+    for week in month_calendar:
         week_str = ""
         for day in week:
             if day == 0:
@@ -82,21 +96,22 @@ def format_days(year, month):
     return formatted_weeks
 
 
-def generate_calendar(year, month):
+def generate_calendar(year, month, first_day_of_week=0):
     """
     Generate a complete calendar for the given month and year.
     
     Args:
         year (int): The year
         month (int): The month (1-12)
+        first_day_of_week (int): First day of week (0=Monday, 6=Sunday)
         
     Returns:
         str: Formatted calendar string
     """
     month_name = get_month_name(month)
     header = format_header(month_name, year)
-    weekdays = format_weekdays()
-    days = format_days(year, month)
+    weekdays = format_weekdays(first_day_of_week)
+    days = format_days(year, month, first_day_of_week)
     
     # Combine all components
     calendar_str = f"{header}\n{weekdays}\n"
@@ -105,12 +120,15 @@ def generate_calendar(year, month):
     return calendar_str
 
 
-def today_calendar():
+def today_calendar(first_day_of_week=0):
     """
     Generate a calendar for the current month and year.
     
+    Args:
+        first_day_of_week (int): First day of week (0=Monday, 6=Sunday)
+        
     Returns:
         str: Formatted calendar string for current month
     """
     now = datetime.now()
-    return generate_calendar(now.year, now.month) 
+    return generate_calendar(now.year, now.month, first_day_of_week) 
