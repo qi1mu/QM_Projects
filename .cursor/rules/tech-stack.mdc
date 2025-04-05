@@ -1,0 +1,24 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Project Stack Rules
+
+## Environment Management
+- Always use Conda to manage environments
+- The environment name for this project is `vbl`
+- To activate: `conda activate vbl`
+
+## Language Specifications
+- Python 3.12 for all backend development
+
+## Testing
+- Pytest is the standard testing framework
+- All code should have appropriate unit tests
+- Run tests with: `pytest`
+
+## Project Structure
+- Follow Python package conventions
+- Maintain a clear separation between source code and tests 
