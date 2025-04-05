@@ -1,0 +1,16 @@
+# Core packages
+pytest==8.0.0
+black==24.1.1
+flake8==7.0.0
+python-dotenv==1.0.0
+
+# Game development
+pygame==2.5.2
+
+# Terminal applications
+rich==13.7.0
+typer==0.9.0
+
+# Web development (if needed)
+flask==3.0.2
+requests==2.31.0
