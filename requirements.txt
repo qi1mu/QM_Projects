@@ -14,3 +14,6 @@ typer==0.9.0
 # Web development (if needed)
 flask==3.0.2
 requests==2.31.0
+
+# ChronoView dependencies
+# No external dependencies required - only Python standard library is used
