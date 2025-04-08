@@ -6,18 +6,19 @@ A collection of Python and JavaScript projects for practicing coding with AI ass
 
 ```
 QM_Projects/
-├── src/
-│   ├── python/
-│   │   ├── games/      # Python-based games
-│   │   ├── terminal_apps/  # Terminal-based applications
-│   │   └── utils/      # Utility functions and helpers
-│   └── web/
-│       ├── js/         # JavaScript files
-│       ├── css/        # Stylesheets
-│       └── html/       # HTML templates
-├── tests/              # Test files
-├── docs/              # Documentation
-└── examples/          # Example implementations
+└── ...
+    ├── docs/
+    │   └── chronoView/
+    │       └── calendar_design.md
+    ├── src/
+    │   └── chronoView/
+    │       ├── __init__.py
+    │       ├── main.py         # Main application script
+    │       ├── input_handler.py
+    │       └── calendar_gen.py
+    └── tests/
+        └── chronoView/
+            └── ... # Test files for chronoView
 ```
 
 ## Setup Instructions
@@ -42,8 +43,8 @@ QM_Projects/
    ```
 
 ## Getting Started
-1. Choose a project from the `src/python/games` or `src/python/terminal_apps` directory
-2. Follow the specific README instructions in each project folder
+1. Choose a project from the `src/` directory (e.g., `src/chronoView`)
+2. Follow the specific README instructions in each project folder (if available)
 3. Run the project using the provided instructions
 
 ## Contributing
@@ -82,7 +83,7 @@ A simple terminal-based calendar application that allows users to view a formatt
 Run the application using Python:
 
 ```
-python src/run_chronoview.py
+python src/chronoView/main.py
 ```
 
 Follow the prompts to:
@@ -91,7 +92,7 @@ Follow the prompts to:
 
 The application will display a calendar for the specified month and year, then ask if you want to view another calendar.
 
-Example output:
+## Example output:
 ```
         April 2025        
 Mo Tu We Th Fr Sa Su
@@ -105,21 +106,21 @@ Mo Tu We Th Fr Sa Su
 ## Project Structure
 
 ```
-chronoview/
+QM_Projects/
 │
 ├── docs/
 │   └── chronoView/
 │       └── calendar_design.md
 │
 ├── src/
-│   ├── chronoView/
-│   │   ├── __init__.py
-│   │   ├── main.py
-│   │   ├── input_handler.py
-│   │   └── calendar_gen.py
-│   └── run_chronoview.py
-│
-└── README.md
+│   └── chronoView/
+│       ├── __init__.py
+│       ├── main.py
+│       ├── input_handler.py
+│       └── calendar_gen.py
+└── tests/
+    └── chronoView/
+        └── ... # Test files for chronoView
 ```
 
 ## License
