@@ -1,0 +1,1 @@
+# This file makes the src/wordle directory a Python package. 
