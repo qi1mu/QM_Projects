@@ -214,13 +214,67 @@ The core logic will be divided into three main components implemented in separat
 *   **Feedback Display:**
     *   Show the guess history, including the feedback for each guess.
     *   Ensure feedback symbols align correctly under the corresponding letters.
-*   **Win Condition:** The player guesses the target word correctly.
-*   **Lose Condition:** The player uses all `MAX_GUESSES` (e.g., 6) without guessing the word.
+*   **Win Condition:** The player guesses the target word correctly within the allowed number of guesses for the chosen difficulty.
+*   **Lose Condition:** The player uses all allowed guesses without guessing the word.
 *   **Hint System:**
     *   **Activation:** Player types "hint" (case-insensitive) instead of a guess.
-    *   **Limit:** Only one hint is allowed per game. Using the hint does not consume a guess turn.
+    *   **Availability:** Dependent on difficulty level (see above). Tracked via `hints_used_count`.
+    *   **Limit:** Number of hints allowed varies by difficulty.
     *   **Functionality:** Reveals one letter that is in the correct position but has not yet been marked with '*' in that specific position in any previous guess. If multiple such letters exist, one is chosen randomly.
-    *   **Feedback:** Informs the player if the hint has already been used or if no suitable hint is available (e.g., all correctly placed letters are already known via feedback).
+    *   **Feedback:** Informs the player if hints are disabled, if they have used all available hints, or provides the hint.
+
+### Game Flow
+
+---
+
+## Usage
+
+Run the game from the project root directory using Python:
+
+```bash
+# Run with default (Medium) difficulty
+python src/wordle/main.py
+
+# Run with a specific difficulty
+python src/wordle/main.py --level easy
+python src/wordle/main.py --level hard
+python src/wordle/main.py -l pro # Short flag also works
+```
+
+Available difficulty levels:
+- `easy`: 8 guesses, 2 hints
+- `medium`: 6 guesses, 1 hint (Default)
+- `hard`: 6 guesses, 0 hints
+- `pro`: 5 guesses, 0 hints
+
+Type "hint" (if available for your difficulty) during your turn to use a hint.
+
+---
+
+This updated design plan incorporates the agreed-upon file structure and details the purpose of each file. 
+
+## Features
+
+*   Standard Wordle gameplay: Guess a 5-letter hidden word.
+*   **Difficulty Levels:** Configurable via `--level` command-line argument (`easy`, `medium` (default), `hard`, `pro`).
+    *   **Easy:** 8 guesses, 2 hints.
+    *   **Medium:** 6 guesses, 1 hint.
+    *   **Hard:** 6 guesses, 0 hints.
+    *   **Pro:** 5 guesses, 0 hints.
+*   Feedback symbols:
+    *   `*`: Correct letter in the correct position.
+    *   `+`: Correct letter in the wrong position.
+    *   `_`: Incorrect letter.
+    *   Show the guess history, including the feedback for each guess.
+    *   Ensure feedback symbols align correctly under the corresponding letters.
+*   **Win Condition:** The player guesses the target word correctly within the allowed number of guesses for the chosen difficulty.
+*   **Lose Condition:** The player uses all allowed guesses without guessing the word.
+*   **Hint System:**
+    *   **Activation:** Player types "hint" (case-insensitive) instead of a guess.
+    *   **Availability:** Dependent on difficulty level (see above). Tracked via `hints_used_count`.
+    *   **Limit:** Number of hints allowed varies by difficulty.
+    *   **Functionality:** Reveals one letter that is in the correct position but has not yet been marked with '*' in that specific position in any previous guess. If multiple such letters exist, one is chosen randomly.
+    *   **Feedback:** Informs the player if hints are disabled, if they have used all available hints, or provides the hint.
 
 ### Game Flow
 

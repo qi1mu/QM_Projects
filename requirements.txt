@@ -17,3 +17,14 @@ requests==2.31.0
 
 # ChronoView dependencies
 # No external dependencies required - only Python standard library is used
+
+# Testing
+pytest-mock
+
+# Linting / Formatting
+# flake8
+# black
+# isort
+
+# Other Tools
+# (e.g., jupyter, notebook if used)

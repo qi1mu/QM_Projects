@@ -2,6 +2,11 @@
 
 A collection of Python and JavaScript projects for practicing coding with AI assistance. This repository contains various games and terminal applications.
 
+## Implemented Projects
+
+1.  **ChronoView:** A terminal-based calendar application (details below).
+2.  **Wordle:** A terminal-based implementation of the popular word-guessing game (details below).
+
 ## Project Structure
 
 ```
@@ -137,3 +142,67 @@ Contributions to ChronoView are welcome! Please feel free to submit a Pull Reque
 - Highlight the current day when viewing the current month
 - Add support for different starting days of the week (Monday/Sunday)
 - Command-line arguments for non-interactive use
+
+---
+
+# Wordle
+
+A terminal-based implementation of the classic word-guessing game.
+
+## Features
+
+- Standard Wordle gameplay: Guess a 5-letter hidden word in 6 tries.
+- Feedback symbols:
+    - `*`: Correct letter in the correct position.
+    - `+`: Correct letter in the wrong position.
+    - `_`: Incorrect letter.
+- Validates guesses against a dictionary of 5-letter words.
+- Hint system: Allows the player to request one hint per game to reveal a correct letter/position.
+- Clear terminal display with aligned feedback.
+
+## Usage
+
+Run the game using Python:
+
+```bash
+# Run with default (Medium) difficulty
+python src/wordle/main.py
+
+# Run with a specific difficulty
+python src/wordle/main.py --level easy
+python src/wordle/main.py --level hard
+python src/wordle/main.py -l pro # Short flag also works
+```
+
+Available difficulty levels:
+- `easy`: 8 guesses, 2 hints
+- `medium`: 6 guesses, 1 hint (Default)
+- `hard`: 6 guesses, 0 hints
+- `pro`: 5 guesses, 0 hints
+
+Follow the prompts to enter your guesses. Type "hint" (if available for your difficulty) to use a hint.
+
+## Project Structure
+
+```
+QM_Projects/
+│
+├── docs/
+│   └── wordle/
+│       └── design_plan.md
+│
+├── src/
+│   └── wordle/
+│       ├── __init__.py
+│       ├── main.py
+│       ├── word_manager.py
+│       ├── evaluator.py
+│       ├── game.py
+│       └── data/
+│           └── words.txt
+└── tests/
+    └── wordle/
+        ├── __init__.py
+        ├── test_evaluator.py
+        └── test_word_manager.py
+```

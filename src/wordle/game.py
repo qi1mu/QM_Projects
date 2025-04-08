@@ -3,27 +3,61 @@ from .word_manager import WordManager
 from .evaluator import Evaluator
 
 class Game:
-    """Manages the Wordle game loop, state, and user interaction."""
+    """Manages the Wordle game loop, state, and user interaction.
 
+    Handles different difficulty levels affecting guesses and hints.
+    """
+
+    # Default values (will be overridden based on difficulty)
     MAX_GUESSES = 6
+    ALLOWED_HINTS = 1
 
-    def __init__(self):
-        """Initializes the game components."""
+    def __init__(self, difficulty="medium"):
+        """Initializes the game components based on the chosen difficulty."""
+        self.difficulty = difficulty.lower() # Store difficulty
+
+        # Set rules based on difficulty
+        if self.difficulty == "easy":
+            self.MAX_GUESSES = 8
+            self.ALLOWED_HINTS = 2
+        elif self.difficulty == "medium":
+            self.MAX_GUESSES = 6
+            self.ALLOWED_HINTS = 1
+        elif self.difficulty == "hard":
+            self.MAX_GUESSES = 6
+            self.ALLOWED_HINTS = 0 # No hints for hard
+        elif self.difficulty == "pro":
+            self.MAX_GUESSES = 5
+            self.ALLOWED_HINTS = 0 # No hints for pro
+        else:
+            # Fallback to medium if somehow an invalid difficulty is passed
+            print(f"Warning: Invalid difficulty '{self.difficulty}' received. Defaulting to Medium.")
+            self.difficulty = "medium"
+            self.MAX_GUESSES = 6
+            self.ALLOWED_HINTS = 1
+
         try:
             self.word_manager = WordManager() # Assumes words.txt is in default location
             self.evaluator = Evaluator()
             self.target_word = self.word_manager.get_target_word()
             self.guesses_history = [] # Stores tuples of (guess, feedback_list)
             self.remaining_guesses = self.MAX_GUESSES
-            self.hint_used = False # Flag to track hint usage
+            # self.hint_used = False # Replaced by hints_used_count
+            self.hints_used_count = 0 # Track hints used
         except ValueError as e:
             print(f"Error initializing game: {e}")
             self.target_word = None # Prevent game from running if setup fails
 
     def _display_welcome(self):
-        """Displays the welcome message."""
-        print("Welcome to Wordle!")
+        """Displays the welcome message including difficulty info."""
+        print("\nWelcome to Wordle!")
+        print(f"Difficulty: {self.difficulty.capitalize()}")
         print(f"Guess the 5-letter word in {self.MAX_GUESSES} tries.")
+        if self.ALLOWED_HINTS > 0:
+            plural = "s" if self.ALLOWED_HINTS > 1 else ""
+            print(f"You have {self.ALLOWED_HINTS} hint{plural} available (type 'hint').")
+        else:
+            print("Hints are disabled for this difficulty.")
         print("Feedback symbols: '*' = Correct position, '+' = Wrong position, '_' = Incorrect letter")
 
     def _display_history(self):
@@ -63,18 +97,29 @@ class Game:
             hint_index = random.choice(available_hint_indices)
             hint_letter = self.target_word[hint_index]
             print(f"Hint: The letter in position {hint_index + 1} is '{hint_letter.upper()}'.")
-            self.hint_used = True # Mark hint as used
+            # self.hint_used = True # Replaced by hints_used_count
+            self.hints_used_count += 1 # Increment hints used count
 
     def _get_user_guess(self):
         """Prompts the user for a guess, handles 'hint' requests, and validates the guess."""
         while True:
-            prompt = f"\nEnter guess {self.MAX_GUESSES - self.remaining_guesses + 1} ({self.remaining_guesses} remaining) or type 'hint': "
+            hints_remaining = self.ALLOWED_HINTS - self.hints_used_count
+            prompt = f"\nEnter guess {self.MAX_GUESSES - self.remaining_guesses + 1} "
+            prompt += f"({self.remaining_guesses} remaining" 
+            if self.ALLOWED_HINTS > 0:
+                 plural = "s" if hints_remaining != 1 else ""
+                 prompt += f", {hints_remaining} hint{plural} left): " 
+            else:
+                 prompt += "): "
+
             raw_input = input(prompt).strip()
             guess = raw_input.lower()
 
             if guess == "hint":
-                if self.hint_used:
-                    print("You have already used your hint for this game.")
+                if self.ALLOWED_HINTS == 0:
+                    print("Hints are disabled for this difficulty level.")
+                elif self.hints_used_count >= self.ALLOWED_HINTS:
+                    print("You have already used all your hints for this game.")
                 else:
                     self._provide_hint()
                 continue # Always re-prompt after hint attempt (success or fail)
