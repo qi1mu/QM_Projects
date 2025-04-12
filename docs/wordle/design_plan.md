@@ -2,6 +2,8 @@
 
 ---
 
+## Original Terminal-Based Implementation
+
 ### Project Overview
 The goal is to create a terminal-based Wordle game where:
 - A random 5-letter word is selected as the target.
@@ -281,3 +283,145 @@ This updated design plan incorporates the agreed-upon file structure and details
 ---
 
 This updated design plan incorporates the agreed-upon file structure and details the purpose of each file. 
+
+---
+
+## Web-Based Implementation
+
+### Project Overview
+The goal is to adapt the terminal-based Wordle game into a web application that:
+- Maintains the core gameplay while providing a more modern and accessible interface
+- Uses the same word list and evaluation logic as the terminal version
+- Adds visual feedback with color-coded tiles instead of text symbols
+- Supports all difficulty levels and features from the original implementation
+- Allows for easy gameplay via web browsers without requiring Python installation
+
+### Architecture
+
+#### Technology Stack
+- **Backend**: Flask (Python web framework)
+- **Frontend**: HTML, CSS, Jinja2 templates
+- **State Management**: Flask session for user game state
+- **Data Storage**: Local word list file
+
+#### Component Structure
+- **WordManager** (`word_manager.py`): Reused from terminal version, manages word lists and selection
+- **Evaluator** (`evaluator.py`): Reused from terminal version, provides guess feedback
+- **Flask App** (`app.py`): Handles HTTP requests, routing, and game flow
+- **Templates**: HTML templates for rendering game interface
+- **Static Files**: CSS for styling and visual presentation
+
+### File Structure
+```
+src/wordle/
+├── __init__.py
+├── app.py                # Main Flask application
+├── word_manager.py       # Word list handling & validation
+├── evaluator.py          # Guess evaluation logic
+├── data/
+│   └── words.txt         # Dictionary of 5-letter words
+├── templates/
+│   └── index.html        # Main game UI template
+└── static/
+    └── css/
+        └── style.css     # Game styling
+```
+
+### Key Features
+
+#### Game Mechanics
+- **Core Gameplay**: Same as terminal version - guess a 5-letter word with feedback
+- **Difficulty Levels**: All four difficulties implemented (Easy, Medium, Hard, Pro)
+- **Hint System**: Request hints via button click instead of typing "hint"
+- **Visual Feedback**: Color-coded tiles replace text symbols
+  - Green for correct letter in correct position
+  - Yellow for correct letter in wrong position
+  - Gray for letters not in the word
+- **Input Validation**: Ensures guesses are valid 5-letter words from the dictionary
+
+#### Web-Specific Features
+- **Page Refresh Behavior**: Game completely resets on page refresh for quick restarts
+- **Session Management**: Maintains game state between requests using Flask sessions
+- **Browser Cache Prevention**: Headers prevent caching for consistent refresh behavior
+- **Responsive Design**: Adapts to various screen sizes and devices
+- **Difficulty Selector**: For starting new games at different levels
+
+### Routes and Endpoints
+
+#### Main Routes
+- **`/`**: Main game page, handles new game initialization and refreshes
+- **`/guess`** (POST): Processes player guesses
+- **`/hint`**: Provides hints when requested
+- **`/new_game`**: Starts a new game with optional difficulty parameter
+
+#### Debug Route
+- **`/debug`**: Displays session state information (development only)
+
+### State Management
+
+#### Session Structure
+The game state is stored in the Flask session as a dictionary with the following keys:
+```python
+{
+    'target_word': str,         # The word to guess (uppercase)
+    'guesses': list,            # List of previous guesses
+    'feedback': list,           # List of feedback for each guess
+    'attempts_left': int,       # Remaining guess attempts
+    'message': str,             # Status message to display
+    'game_over': bool,          # Whether the game has ended
+    'win': bool,                # Whether the player won
+    'difficulty': str,          # Current difficulty level
+    'allowed_hints': int,       # Total hints allowed
+    'hints_used': int           # Number of hints used
+}
+```
+
+#### Request Flow
+1. **Page Load/Refresh**: Creates new game with fresh target word
+2. **Form Submission**: Validates guess and updates game state
+3. **Redirects**: Include `from_redirect` parameter to maintain state
+
+### User Interface Elements
+
+#### Game Board
+- **Header**: Shows game title and difficulty level
+- **Game Info**: Displays attempts remaining and hint availability
+- **Message Area**: Shows game status and feedback messages
+- **Guess History**: Displays previous guesses with color-coded feedback
+- **Input Form**: For entering new guesses
+- **Hint Button**: Appears when hints are available
+- **Difficulty Selector**: For starting new games at different levels
+
+### Usage
+The web version is accessed via browser at the deployed URL (typically http://localhost:5001 in development).
+
+Unlike the terminal version which is started with command-line arguments, the web version allows difficulty selection through the user interface.
+
+### Technical Implementation Notes
+
+#### Session Size Management
+- Avoids storing the full word list in session to prevent cookie size limits
+- Performs word validation against the WordManager directly
+- Maintains minimal state in the session for performance
+
+#### Security Considerations
+- Prevents client-side access to the target word (verification happens server-side)
+- Ensures validation against server-side word list to prevent cheating
+- Uses CSRF protection for form submissions
+
+#### Browser Compatibility
+- Includes cache-control headers to ensure consistent behavior across browsers
+- Provides graceful fallbacks for styling in older browsers
+- Uses standardized HTML5 and CSS3 features for broad compatibility
+
+### Future Enhancements
+- User accounts and statistics tracking
+- Daily puzzles with the same word for all players
+- Keyboard display showing used letters
+- Mobile-optimized interface
+- Social sharing functionality
+- Animations and sound effects
+
+---
+
+This design plan now covers both the original terminal-based implementation and the web-based adaptation, detailing the differences in architecture, features, and user experience.

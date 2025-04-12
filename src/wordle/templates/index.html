@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add cache-control meta tags to prevent caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Wordle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Basic styling for the new elements */
+        .difficulty-selector {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+        }
+        .hint-button {
+            margin: 10px 0;
+            padding: 5px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .hint-button[disabled] {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .difficulty-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .difficulty-easy {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .difficulty-medium {
+            background-color: #2196F3;
+            color: white;
+        }
+        .difficulty-hard {
+            background-color: #FF9800;
+            color: white;
+        }
+        .difficulty-pro {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wordle</h1>
+
+    {# Display flashed messages (like errors) #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {# Display game content only if no critical error occurred (like word list loading failure) #}
+    {% if not error and game_state %}
+        <div class="game-info">
+            <div>
+                <p>Difficulty: <span class="difficulty-badge difficulty-{{ game_state.difficulty|default('medium') }}">{{ game_state.difficulty|default('Medium')|capitalize }}</span></p>
+                <p>Attempts Left: {{ game_state.attempts_left|default(6) }}</p>
+                {% if game_state.allowed_hints|default(0) > 0 %}
+                <p>Hints: {{ game_state.hints_used|default(0) }} / {{ game_state.allowed_hints|default(0) }} used</p>
+                {% endif %}
+            </div>
+            <div>
+                <p class="status-message">{{ game_state.message|default('Enter your guess!') }}</p>
+            </div>
+        </div>
+
+        <div class="game-board">
+            {# Loop through past guesses and feedback #}
+            {% for i in range(game_state.guesses | length) %}
+                <div class="guess-row">
+                    {% set guess = game_state.guesses[i] %}
+                    {% set feedback = game_state.feedback[i] %}
+                    {% for j in range(guess | length) %}
+                        {# Determine class based on feedback symbol #}
+                        {% set char = guess[j] %}
+                        {% set symbol = feedback[j] %}
+                        {% set feedback_class = '' %}
+                        {% if symbol == '*' %}
+                            {% set feedback_class = 'correct-position' %}
+                        {% elif symbol == '+' %}
+                            {% set feedback_class = 'wrong-position' %}
+                        {% elif symbol == '_' %}
+                            {% set feedback_class = 'incorrect-letter' %}
+                        {% endif %}
+                        <span class="tile {{ feedback_class }}">{{ char }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Display guess input form only if game is not over #}
+        {% if not game_state.game_over|default(false) %}
+            <div class="guess-form">
+                <form action="{{ url_for('handle_guess') }}" method="post"> {# Pointing to handle_guess route #}
+                    <label for="guess">Enter Guess:</label>
+                    <input type="text" id="guess" name="guess" required minlength="5" maxlength="5" pattern="[a-zA-Z]{5}" title="5-letter word" autofocus>
+                    <button type="submit">Guess</button>
+                </form>
+            </div>
+            
+            {# Display hint button if hints are available #}
+            {% if game_state.allowed_hints|default(0) > game_state.hints_used|default(0) %}
+                <a href="{{ url_for('get_hint') }}" class="hint-button">Get Hint</a>
+            {% elif game_state.allowed_hints|default(0) > 0 %}
+                <button class="hint-button" disabled>No Hints Left</button>
+            {% endif %}
+        {% endif %}
+
+        {# Add a New Game button/link eventually #}
+        {% if game_state.game_over %}
+            <div class="new-game">
+                <p>Start new game with difficulty:</p>
+                <div class="difficulty-buttons">
+                    <a href="{{ url_for('new_game', difficulty='easy') }}" class="difficulty-badge difficulty-easy">Easy</a>
+                    <a href="{{ url_for('new_game', difficulty='medium') }}" class="difficulty-badge difficulty-medium">Medium</a>
+                    <a href="{{ url_for('new_game', difficulty='hard') }}" class="difficulty-badge difficulty-hard">Hard</a>
+                    <a href="{{ url_for('new_game', difficulty='pro') }}" class="difficulty-badge difficulty-pro">Pro</a>
+                </div>
+            </div>
+        {% endif %}
+
+    {% elif error %}
+         <p>A critical error occurred. Please check the setup.</p>
+    {% else %}
+        <p>Loading game...</p> {# Should not happen if logic is correct #}
+    {% endif %}
+    
+    {# Add difficulty selector for new games on the main page #}
+    {% if not game_state or game_state.game_over %}
+        <div class="difficulty-selector">
+            <h3>Select Difficulty</h3>
+            <p>
+                <a href="{{ url_for('new_game', difficulty='easy') }}">Easy (8 guesses, 2 hints)</a><br>
+                <a href="{{ url_for('new_game', difficulty='medium') }}">Medium (6 guesses, 1 hint)</a><br>
+                <a href="{{ url_for('new_game', difficulty='hard') }}">Hard (6 guesses, 0 hints)</a><br>
+                <a href="{{ url_for('new_game', difficulty='pro') }}">Pro (5 guesses, 0 hints)</a>
+            </p>
+        </div>
+    {% endif %}
+
+    <!-- Link to JS file if needed later -->
+    <!-- <script src="{{ url_for('static', filename='js/game.js') }}"></script> -->
+</body>
+</html> 

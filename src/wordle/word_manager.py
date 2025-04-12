@@ -43,6 +43,13 @@ class WordManager:
             return None # Or raise an error
         return random.choice(self.word_list)
 
+    def select_target_word(self):
+        """Selects a random word from the loaded list and updates the target_word."""
+        if not self.word_list:
+            return None # Or raise an error
+        self.target_word = random.choice(self.word_list)
+        return self.target_word
+
     def get_target_word(self):
         """Returns the selected target word."""
         return self.target_word

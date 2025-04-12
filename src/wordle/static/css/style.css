@@ -1,0 +1,130 @@
+/* Basic styles will go here */ 
+
+body {
+    font-family: sans-serif;
+    max-width: 600px;
+    margin: 2em auto;
+    padding: 0 1em;
+    line-height: 1.6;
+}
+
+h1 {
+    text-align: center;
+}
+
+.flash-messages .alert {
+    padding: 0.75em;
+    margin-bottom: 1em;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.game-info {
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+.status-message {
+    font-weight: bold;
+}
+
+.game-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.guess-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px; /* Space between rows */
+}
+
+.tile {
+    display: inline-block;
+    width: 50px; /* Fixed width for tiles */
+    height: 50px; /* Fixed height for tiles */
+    line-height: 50px; /* Center text vertically */
+    text-align: center;
+    border: 2px solid #d3d6da;
+    margin: 0 2px; /* Space between tiles */
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-sizing: border-box; /* Include border in width/height */
+}
+
+/* Feedback colors */
+.tile.correct-position {
+    background-color: #6aaa64; /* Green */
+    color: white;
+    border-color: #6aaa64;
+}
+
+.tile.wrong-position {
+    background-color: #c9b458; /* Yellow */
+    color: white;
+    border-color: #c9b458;
+}
+
+.tile.incorrect-letter {
+    background-color: #787c7e; /* Grey */
+    color: white;
+    border-color: #787c7e;
+}
+
+.guess-form {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.guess-form input[type="text"] {
+    padding: 0.5em;
+    font-size: 1.2em;
+    width: 150px; /* Adjust as needed */
+    text-transform: uppercase;
+    margin-right: 5px;
+}
+
+.guess-form button {
+    padding: 0.5em 1em;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.new-game {
+    text-align: center;
+    margin-top: 1em;
+}
+
+.new-game a {
+    padding: 0.6em 1.2em;
+    background-color: #6aaa64;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+}
+
+.new-game a:hover {
+    background-color: #5a9a54;
+} 
